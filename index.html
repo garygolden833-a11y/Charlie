@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donation Page</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, red, black, gold);
+      color: white;
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: white;
+      text-shadow: 2px 2px 6px gold;
+      margin-bottom: 20px;
+      animation: fadeInDown 2s ease;
+    }
+
+    .donation-box {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 25px;
+      border-radius: 15px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 4px 20px rgba(255, 215, 0, 0.6);
+      animation: fadeInUp 2s ease;
+    }
+
+    .amount-options button {
+      background: gold;
+      color: red;
+      font-weight: bold;
+      padding: 10px 18px;
+      margin: 5px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: transform 0.2s ease-in-out, box-shadow 0.2s;
+    }
+
+    .amount-options button:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 15px gold;
+    }
+
+    input[type="number"] {
+      width: 90%;
+      padding: 10px;
+      margin: 15px 0;
+      border: 2px solid gold;
+      border-radius: 8px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .donate-btn {
+      background: purple;
+      color: white;
+      font-weight: bold;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    .donate-btn:hover {
+      background: gold;
+      color: black;
+      transform: scale(1.1);
+    }
+
+    .thank-you {
+      display: none;
+      margin-top: 20px;
+      font-size: 1.3rem;
+      color: gold;
+      animation: fadeOut 4s forwards;
+    }
+
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Popup Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      animation: fadeInUp 0.6s;
+    }
+
+    .modal-content {
+      background: black;
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 380px;
+      color: white;
+      box-shadow: 0 0 20px gold;
+    }
+
+    .close {
+      color: red;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: gold;
+    }
+
+    .qr-section {
+      margin-top: 15px;
+    }
+
+    .qr-section img {
+      max-width: 200px;
+      margin-bottom: 10px;
+      border: 2px solid gold;
+      border-radius: 10px;
+    }
+
+    .copy-btn {
+      background: gold;
+      color: black;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    .copy-btn:hover {
+      background: purple;
+      color: white;
+    }
+
+    /* Image Popup */
+    .image-gallery {
+      margin-top: 30px;
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 2s ease;
+    }
+
+    .image-gallery img {
+      width: 120px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 10px;
+      cursor: pointer;
+      border: 2px solid gold;
+      transition: transform 0.3s ease, box-shadow 0.3s;
+    }
+
+    .image-gallery img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 15px gold;
+    }
+
+    .image-popup {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.95);
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    .image-popup img {
+      max-width: 80%;
+      max-height: 70%;
+      border: 5px solid gold;
+      border-radius: 12px;
+      animation: fadeInUp 1s ease;
+    }
+
+    .quote {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: gold;
+      font-style: italic;
+      animation: fadeInDown 1s ease;
+      max-width: 80%;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Support Our Mission</h1>
+  <div class="donation-box">
+    <div class="amount-options">
+      <button onclick="setAmount(10)">$10</button>
+      <button onclick="setAmount(50)">$50</button>
+      <button onclick="setAmount(100)">$100</button>
+      <button onclick="setAmount(200)">$200</button>
+    </div>
+
+    <input type="number" id="customAmount" placeholder="Enter custom amount">
+
+    <br>
+    <select id="paymentMethod">
+      <option value="BTC">Bitcoin (BTC)</option>
+      <option value="ETH">Ethereum (ETH)</option>
+      <option value="USDT">Tether (USDT)</option>
+      <option value="PayPal">PayPal</option>
+    </select>
+
+    <br><br>
+    <button class="donate-btn" onclick="showModal()">Donate Now</button>
+
+    <p class="thank-you" id="thankYou">Thank you for donating! ❤️</p>
+  </div>
+
+  <!-- Image Gallery -->
+  <div class="image-gallery">
+    <img src="images/charlie1.avif" alt="Gallery 1" onclick="showImagePopup(this, 0)">
+    <img src="images/charlie2.jpg" alt="Gallery 2" onclick="showImagePopup(this, 1)">
+    <img src="images/charlie3.jpg" alt="Gallery 3" onclick="showImagePopup(this, 2)">
+    <img src="images/charlie5.jpg" alt="Gallery 4" onclick="showImagePopup(this, 3)">
+  </div>
+
+  <!-- Modal -->
+  <div id="donationModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Confirm Donation</h2>
+      <p id="confirmText"></p>
+      <div class="qr-section" id="qrSection">
+        <img id="qrImg" src="" alt="QR Code">
+        <p id="walletCode"></p>
+        <button class="copy-btn" onclick="copyCode()">Copy Address</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Image Popup -->
+  <div id="imagePopup" class="image-popup" onclick="closeImagePopup()">
+    <img id="popupImage" src="" alt="Popup">
+    <p id="popupQuote" class="quote"></p>
+  </div>
+
+  <script>
+    const wallets = {
+      BTC: { code: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", qr: "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BTC:1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa" },
+      ETH: { code: "0x742d35Cc6634C0532925a3b844Bc454e4438f44e", qr: "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=ETH:0x742d35Cc6634C0532925a3b844Bc454e4438f44e" },
+      USDT: { code: "TXr9D2qR9YZXYxyMqgXZT94gEyqDYh1t7p", qr: "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=USDT:TXr9D2qR9YZXYxyMqgXZT94gEyqDYh1t7p" },
+      PayPal: { code: "donate@paypal.com", qr: "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=paypal.me/donate" }
+    };
+
+    const quotes = [
+      "“The greatest threat to liberty is a disengaged citizenry.” – Charlie Kirk",
+      "“Faith, family, and freedom are the pillars of a strong nation.” – Charlie Kirk",
+      "“We don’t need safe spaces, we need brave spaces.” – Charlie Kirk",
+      "“When conservatives show up, we win.” – Charlie Kirk"
+    ];
+
+    function setAmount(amount) {
+      document.getElementById("customAmount").value = amount;
+    }
+
+    function showModal() {
+      let amount = document.getElementById("customAmount").value;
+      let method = document.getElementById("paymentMethod").value;
+
+      if (!amount || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
+
+      document.getElementById("confirmText").innerText =
+        "You are donating $" + amount + " via " + method + ".";
+
+      document.getElementById("qrImg").src = wallets[method].qr;
+      document.getElementById("walletCode").innerText = wallets[method].code;
+
+      document.getElementById("donationModal").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("donationModal").style.display = "none";
+    }
+
+    function copyCode() {
+      let text = document.getElementById("walletCode").innerText;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("Copied: " + text);
+      });
+    }
+
+    function confirmDonation() {
+      closeModal();
+      let thankYou = document.getElementById("thankYou");
+      thankYou.style.display = "block";
+      setTimeout(() => {
+        thankYou.style.display = "none";
+      }, 4000);
+    }
+
+    function showImagePopup(img, index) {
+      document.getElementById("popupImage").src = img.src;
+      document.getElementById("popupQuote").innerText = quotes[index];
+      document.getElementById("imagePopup").style.display = "flex";
+      setTimeout(closeImagePopup, 6000); // Auto close after 6s
+    }
+
+    function closeImagePopup() {
+      document.getElementById("imagePopup").style.display = "none";
+    }
+  </script>
+</body>
+</html>
